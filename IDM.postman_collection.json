@@ -1,0 +1,494 @@
+{
+  "info": {
+    "_postman_id": "080fb2e2-31e3-4b20-9779-49e6d3f965e5",
+    "name": "IDM",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "12015504"
+  },
+  "item": [
+    {
+      "name": "claim-core",
+      "item": [
+        {
+          "name": "list",
+          "item": [
+            {
+              "name": "getAll",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8071/api/v1/claims",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8071",
+                  "path": [
+                    "api",
+                    "v1",
+                    "claims"
+                  ]
+                },
+                "description": "Generated from cURL: curl --location --request GET \"http://localhost:8081/api/v1/claims\"\r\n"
+              },
+              "response": []
+            },
+            {
+              "name": "get-by-id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8071/api/v1/claims/ca773c32-032d-4f16-a259-3b3d28af4175",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8071",
+                  "path": [
+                    "api",
+                    "v1",
+                    "claims",
+                    "ca773c32-032d-4f16-a259-3b3d28af4175"
+                  ]
+                },
+                "description": "Generated from cURL: curl --location --request GET \"http://localhost:8081/api/v1/claims/REEMPLAZA_UUID_AQUI\"\r\n"
+              },
+              "response": []
+            },
+            {
+              "name": "get-by-status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8071/api/v1/claims?status=DRAFT",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8071",
+                  "path": [
+                    "api",
+                    "v1",
+                    "claims"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "DRAFT"
+                    }
+                  ]
+                },
+                "description": "Generated from cURL: curl --location --request GET \"http://localhost:8081/api/v1/claims?status=DRAFT\"\r\n"
+              },
+              "response": []
+            },
+            {
+              "name": "get-by-policy-number",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8071/api/v1/claims?policyNumber=POL-2026-0001",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8071",
+                  "path": [
+                    "api",
+                    "v1",
+                    "claims"
+                  ],
+                  "query": [
+                    {
+                      "key": "policyNumber",
+                      "value": "POL-2026-0001"
+                    }
+                  ]
+                },
+                "description": "Generated from cURL: curl --location --request GET \"http://localhost:8081/api/v1/claims?policyNumber=POL-2026-0001\"\r\n"
+              },
+              "response": []
+            },
+            {
+              "name": "get-by-type",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8071/api/v1/claims?type=COLLISION",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8071",
+                  "path": [
+                    "api",
+                    "v1",
+                    "claims"
+                  ],
+                  "query": [
+                    {
+                      "key": "type",
+                      "value": "COLLISION"
+                    }
+                  ]
+                },
+                "description": "Generated from cURL: curl --location --request GET \"http://localhost:8081/api/v1/claims?type=COLLISION\"\r\n"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "status",
+          "item": [
+            {
+              "name": "submit",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8071/api/v1/claims/ca773c32-032d-4f16-a259-3b3d28af4175/submit",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8071",
+                  "path": [
+                    "api",
+                    "v1",
+                    "claims",
+                    "ca773c32-032d-4f16-a259-3b3d28af4175",
+                    "submit"
+                  ]
+                },
+                "description": "Generated from cURL: curl --location --request POST \"http://localhost:8081/api/v1/claims/REEMPLAZA_UUID_AQUI/submit\"\r\n"
+              },
+              "response": []
+            },
+            {
+              "name": "validate",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8071/api/v1/claims/ca773c32-032d-4f16-a259-3b3d28af4175/validate",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8071",
+                  "path": [
+                    "api",
+                    "v1",
+                    "claims",
+                    "ca773c32-032d-4f16-a259-3b3d28af4175",
+                    "validate"
+                  ]
+                },
+                "description": "Generated from cURL: curl --location --request POST \"http://localhost:8081/api/v1/claims/REEMPLAZA_UUID_AQUI/validate\"\r\n"
+              },
+              "response": []
+            },
+            {
+              "name": "approve",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8071/api/v1/claims/ca773c32-032d-4f16-a259-3b3d28af4175/approve",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8071",
+                  "path": [
+                    "api",
+                    "v1",
+                    "claims",
+                    "ca773c32-032d-4f16-a259-3b3d28af4175",
+                    "approve"
+                  ]
+                },
+                "description": "Generated from cURL: curl --location --request POST \"http://localhost:8081/api/v1/claims/REEMPLAZA_UUID_AQUI/approve\"\r\n"
+              },
+              "response": []
+            },
+            {
+              "name": "reject",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"reason\": \"Documentación insuficiente\"\r\n  }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8071/api/v1/claims/ca773c32-032d-4f16-a259-3b3d28af4175/reject",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8071",
+                  "path": [
+                    "api",
+                    "v1",
+                    "claims",
+                    "ca773c32-032d-4f16-a259-3b3d28af4175",
+                    "reject"
+                  ]
+                },
+                "description": "Generated from cURL: curl --location --request POST \"http://localhost:8081/api/v1/claims/REEMPLAZA_UUID_AQUI/reject\" \\\r\n  --header \"Content-Type: application/json\" \\\r\n  --data '{\r\n    \"reason\": \"Documentación insuficiente\"\r\n  }'\r\n"
+              },
+              "response": []
+            },
+            {
+              "name": "pay",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"paymentRef\": \"PAY-REF-000123\"\r\n  }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://localhost:8071/api/v1/claims/ca773c32-032d-4f16-a259-3b3d28af4175/pay",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8071",
+                  "path": [
+                    "api",
+                    "v1",
+                    "claims",
+                    "ca773c32-032d-4f16-a259-3b3d28af4175",
+                    "pay"
+                  ]
+                },
+                "description": "Generated from cURL: curl --location --request POST \"http://localhost:8081/api/v1/claims/REEMPLAZA_UUID_AQUI/pay\" \\\r\n  --header \"Content-Type: application/json\" \\\r\n  --data '{\r\n    \"paymentRef\": \"PAY-REF-000123\"\r\n  }'\r\n"
+              },
+              "response": []
+            },
+            {
+              "name": "cancel",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:8071/api/v1/claims/ca773c32-032d-4f16-a259-3b3d28af4175/cancel?reason=Cancelado%20por%20el%20cliente",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "8071",
+                  "path": [
+                    "api",
+                    "v1",
+                    "claims",
+                    "ca773c32-032d-4f16-a259-3b3d28af4175",
+                    "cancel"
+                  ],
+                  "query": [
+                    {
+                      "key": "reason",
+                      "value": "Cancelado%20por%20el%20cliente"
+                    }
+                  ]
+                },
+                "description": "Generated from cURL: curl --location --request POST \"http://localhost:8081/api/v1/claims/REEMPLAZA_UUID_AQUI/cancel?reason=Cancelado%20por%20el%20cliente\"\r\n"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "create-claim",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"policyNumber\": \"POL-2026-0002\",\r\n    \"claimantId\": \"DNI-12345678\",\r\n    \"type\": \"COLLISION\",\r\n    \"description\": \"Choque leve en estacionamiento\",\r\n    \"amountRequested\": 1500.50\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8071/api/v1/claims",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8071",
+              "path": [
+                "api",
+                "v1",
+                "claims"
+              ]
+            },
+            "description": "Generated from cURL: curl --location --request POST \"http://localhost:8081/api/v1/claims\" \\\r\n  --header \"Content-Type: application/json\" \\\r\n  --data '{\r\n    \"policyNumber\": \"POL-2026-0001\",\r\n    \"claimantId\": \"DNI-12345678\",\r\n    \"type\": \"COLLISION\",\r\n    \"description\": \"Choque leve en estacionamiento\",\r\n    \"amountRequested\": 1500.50\r\n  }'\r\n"
+          },
+          "response": []
+        },
+        {
+          "name": "update-claim",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"policyNumber\": \"POL-2026-0001\",\r\n    \"claimantId\": \"DNI-12345678\",\r\n    \"type\": \"COLLISION\",\r\n    \"description\": \"Choque leve (actualizado)\",\r\n    \"amountRequested\": 1800.00\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8071/api/v1/claims/120b90e0-a3d6-4b51-a19c-bfda9ae7bc40",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8071",
+              "path": [
+                "api",
+                "v1",
+                "claims",
+                "120b90e0-a3d6-4b51-a19c-bfda9ae7bc40"
+              ]
+            },
+            "description": "Generated from cURL: curl --location --request PUT \"http://localhost:8081/api/v1/claims/REEMPLAZA_UUID_AQUI\" \\\r\n  --header \"Content-Type: application/json\" \\\r\n  --data '{\r\n    \"policyNumber\": \"POL-2026-0001\",\r\n    \"claimantId\": \"DNI-12345678\",\r\n    \"type\": \"COLLISION\",\r\n    \"description\": \"Choque leve (actualizado)\",\r\n    \"amountRequested\": 1800.00\r\n  }'\r\n"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "claim-orchestration",
+      "item": [
+        {
+          "name": "flow",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"policyNumber\": \"POL-2026-0001\",\r\n    \"claimantId\": \"DNI-12345678\",\r\n    \"type\": \"COLLISION\",\r\n    \"description\": \"Choque leve en estacionamiento\",\r\n    \"amountRequested\": 900.00,\r\n    \"autoPay\": false\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8070/api/v1/flows/claims",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8070",
+              "path": [
+                "api",
+                "v1",
+                "flows",
+                "claims"
+              ]
+            },
+            "description": "Generated from cURL: curl --location --request POST \"http://localhost:8072/api/v1/flows/claims\" \\\r\n  --header \"Content-Type: application/json\" \\\r\n  --data '{\r\n    \"policyNumber\": \"POL-2026-0001\",\r\n    \"claimantId\": \"DNI-12345678\",\r\n    \"type\": \"COLLISION\",\r\n    \"description\": \"Choque leve en estacionamiento\",\r\n    \"amountRequested\": 900.00,\r\n    \"autoPay\": true\r\n  }'\r\n"
+          },
+          "response": []
+        },
+        {
+          "name": "statusFlow",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8070/api/v1/flows/824a23c5-4dba-40cd-bc4a-aa5f1b47513a",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8070",
+              "path": [
+                "api",
+                "v1",
+                "flows",
+                "824a23c5-4dba-40cd-bc4a-aa5f1b47513a"
+              ]
+            },
+            "description": "Generated from cURL: curl --location --request GET \"http://localhost:8072/api/v1/flows/REEMPLAZA_FLOW_UUID_AQUI\"\r\n"
+          },
+          "response": []
+        },
+        {
+          "name": "retry",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8070/api/v1/flows/15975ce2-25c5-49e4-a9de-66bba9bbabe0/retry",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8070",
+              "path": [
+                "api",
+                "v1",
+                "flows",
+                "15975ce2-25c5-49e4-a9de-66bba9bbabe0",
+                "retry"
+              ]
+            },
+            "description": "Generated from cURL: curl --location --request POST \"http://localhost:8072/api/v1/flows/REEMPLAZA_FLOW_UUID_AQUI/retry\"\r\n"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

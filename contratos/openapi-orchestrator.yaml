@@ -1,0 +1,225 @@
+openapi: 3.0.3
+info:
+  title: Claims Orchestrator Service API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8070
+
+tags:
+  - name: Flows
+    description: Orchestrated flows endpoints
+
+paths:
+  /api/v1/flows/claims:
+    post:
+      tags: [Flows]
+      summary: Start a full claim flow
+      operationId: startClaimFlow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StartFlowCommand"
+            examples:
+              postman_flow:
+                summary: Postman example (flow)
+                value:
+                  policyNumber: "POL-2026-0001"
+                  claimantId: "DNI-12345678"
+                  type: "COLLISION"
+                  description: "Choque leve en estacionamiento"
+                  amountRequested: 900.00
+                  autoPay: true
+      responses:
+        "200":
+          description: Flow result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FlowStatusResponse"
+              examples:
+                ok_completed_approved:
+                  summary: COMPLETED - APPROVE path
+                  value:
+                    flowId: "65263ac1-3a76-4dd5-9e44-27218a690afa"
+                    claimId: "37238551-132c-4441-87a9-faa8cdce7d94"
+                    status: "COMPLETED"
+                    lastStep: "APPROVE"
+                    executedSteps:
+                      - "CREATE"
+                      - "SUBMIT"
+                      - "VALIDATE"
+                      - "DECIDE"
+                      - "APPROVE"
+                    errorMessage: null
+                    createdAt: "2026-02-15T16:37:30.614296900Z"
+                    updatedAt: "2026-02-15T16:37:30.849350400Z"
+        "400":
+          description: Validation or domain error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /api/v1/flows/{flowId}:
+    get:
+      tags: [Flows]
+      summary: Get flow status
+      operationId: getFlowStatus
+      parameters:
+        - in: path
+          name: flowId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          examples:
+            postman_statusFlow:
+              summary: Postman example flowId
+              value: "824a23c5-4dba-40cd-bc4a-aa5f1b47513a"
+      responses:
+        "200":
+          description: Flow status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FlowStatusResponse"
+        "404":
+          description: Flow not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /api/v1/flows/{flowId}/retry:
+    post:
+      tags: [Flows]
+      summary: Retry a flow (only FAILED or COMPENSATED)
+      operationId: retryFlow
+      parameters:
+        - in: path
+          name: flowId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          examples:
+            postman_retry:
+              summary: Postman example flowId
+              value: "824a23c5-4dba-40cd-bc4a-aa5f1b47513a"
+      responses:
+        "200":
+          description: Retry result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FlowStatusResponse"
+        "404":
+          description: Flow not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Retry not allowed (status must be FAILED or COMPENSATED)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+components:
+  schemas:
+    StartFlowCommand:
+      type: object
+      required: [policyNumber, claimantId, type, description, amountRequested, autoPay]
+      properties:
+        policyNumber:
+          type: string
+          maxLength: 64
+        claimantId:
+          type: string
+          maxLength: 64
+        type:
+          $ref: "#/components/schemas/ClaimType"
+        description:
+          type: string
+          maxLength: 500
+        amountRequested:
+          type: number
+          format: double
+          minimum: 0
+        autoPay:
+          type: boolean
+
+    FlowStatusResponse:
+      type: object
+      required: [flowId, status, executedSteps, createdAt, updatedAt]
+      properties:
+        flowId:
+          type: string
+          format: uuid
+        claimId:
+          type: string
+          format: uuid
+          nullable: true
+        status:
+          $ref: "#/components/schemas/FlowStatus"
+        lastStep:
+          $ref: "#/components/schemas/FlowStep"
+          nullable: true
+        executedSteps:
+          type: array
+          items:
+            $ref: "#/components/schemas/FlowStep"
+        errorMessage:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    FlowStatus:
+      type: string
+      enum: [RUNNING, COMPLETED, FAILED, COMPENSATED]
+
+    FlowStep:
+      type: string
+      enum: [CREATE, SUBMIT, VALIDATE, DECIDE, APPROVE, REJECT, PAY, CANCEL_CORE]
+
+    ClaimType:
+      type: string
+      enum: [COLLISION, THEFT, GLASS, FIRE, OTHER]
+
+    ApiError:
+      type: object
+      required: [message, type, timestamp]
+      properties:
+        message:
+          type: string
+        type:
+          type: string
+        timestamp:
+          type: string
+          format: date-time

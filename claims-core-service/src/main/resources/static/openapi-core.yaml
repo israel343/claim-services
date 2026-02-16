@@ -1,0 +1,547 @@
+openapi: 3.0.3
+info:
+  title: Claims Core Service API
+  version: 1.0.0
+  description: >
+    Core service for claim lifecycle management.
+    States and allowed transitions
+servers:
+  - url: http://localhost:8071
+
+tags:
+  - name: Claims
+    description: Claim lifecycle endpoints
+
+paths:
+  /api/v1/claims:
+    post:
+      tags: [Claims]
+      summary: Create a claim (starts in DRAFT)
+      operationId: createClaim
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateClaimRequest"
+            examples:
+              create_collision:
+                summary: Create claim - COLLISION
+                value:
+                  policyNumber: "POL-2026-0001"
+                  claimantId: "DNI-12345678"
+                  type: "COLLISION"
+                  description: "Choque leve en estacionamiento"
+                  amountRequested: 900.00
+      responses:
+        "200":
+          description: Claim created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClaimResponse"
+              examples:
+                created_draft:
+                  summary: Created claim in DRAFT
+                  value:
+                    id: "37238551-132c-4441-87a9-faa8cdce7d94"
+                    policyNumber: "POL-2026-0001"
+                    claimantId: "DNI-12345678"
+                    type: "COLLISION"
+                    description: "Choque leve en estacionamiento"
+                    amountRequested: 900.00
+                    status: "DRAFT"
+                    createdAt: "2026-02-15T16:37:30.614296900Z"
+                    updatedAt: "2026-02-15T16:37:30.614296900Z"
+        "400":
+          description: Validation or domain error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+    get:
+      tags: [Claims]
+      summary: List/Search claims
+      operationId: searchClaims
+      parameters:
+        - in: query
+          name: status
+          required: false
+          schema:
+            $ref: "#/components/schemas/ClaimStatus"
+          examples:
+            status_example:
+              summary: Filter by status
+              value: "DRAFT"
+        - in: query
+          name: policyNumber
+          required: false
+          schema:
+            type: string
+            maxLength: 64
+          examples:
+            policy_example:
+              summary: Filter by policy number
+              value: "POL-2026-0001"
+        - in: query
+          name: claimantId
+          required: false
+          schema:
+            type: string
+            maxLength: 64
+          examples:
+            claimant_example:
+              summary: Filter by claimant id
+              value: "DNI-12345678"
+        - in: query
+          name: type
+          required: false
+          schema:
+            $ref: "#/components/schemas/ClaimType"
+          examples:
+            type_example:
+              summary: Filter by type
+              value: "COLLISION"
+      responses:
+        "200":
+          description: Claims list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ClaimResponse"
+        "400":
+          description: Invalid query params
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /api/v1/claims/{claimId}:
+    get:
+      tags: [Claims]
+      summary: Get claim by id
+      operationId: getClaimById
+      parameters:
+        - in: path
+          name: claimId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          examples:
+            id_example:
+              summary: Claim id example
+              value: "37238551-132c-4441-87a9-faa8cdce7d94"
+      responses:
+        "200":
+          description: Claim
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClaimResponse"
+        "404":
+          description: Claim not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /api/v1/claims/{claimId}/submit:
+    post:
+      tags: [Claims]
+      summary: Submit claim (DRAFT -> SUBMITTED)
+      operationId: submitClaim
+      parameters:
+        - in: path
+          name: claimId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Claim submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClaimResponse"
+        "404":
+          description: Claim not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Invalid transition (allowed only from DRAFT)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /api/v1/claims/{claimId}/validate:
+    post:
+      tags: [Claims]
+      summary: Validate claim (SUBMITTED -> VALIDATED)
+      operationId: validateClaim
+      parameters:
+        - in: path
+          name: claimId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Claim validated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClaimResponse"
+        "404":
+          description: Claim not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Invalid transition (allowed only from SUBMITTED)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /api/v1/claims/{claimId}/approve:
+    post:
+      tags: [Claims]
+      summary: Approve claim (VALIDATED -> APPROVED)
+      operationId: approveClaim
+      parameters:
+        - in: path
+          name: claimId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Claim approved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClaimResponse"
+        "404":
+          description: Claim not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Invalid transition (allowed only from VALIDATED)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /api/v1/claims/{claimId}/reject:
+    post:
+      tags: [Claims]
+      summary: Reject claim (VALIDATED -> REJECTED)
+      operationId: rejectClaim
+      parameters:
+        - in: path
+          name: claimId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RejectClaimRequest"
+            examples:
+              reject_policy:
+                summary: Reject with policy reason
+                value:
+                  reason: "Policy rule: requires manual review"
+      responses:
+        "200":
+          description: Claim rejected
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClaimResponse"
+              examples:
+                rejected:
+                  summary: Rejected claim
+                  value:
+                    id: "37238551-132c-4441-87a9-faa8cdce7d94"
+                    policyNumber: "POL-2026-0001"
+                    claimantId: "DNI-12345678"
+                    type: "COLLISION"
+                    description: "Choque leve en estacionamiento"
+                    amountRequested: 900.00
+                    status: "REJECTED"
+                    createdAt: "2026-02-15T16:37:30.614296900Z"
+                    updatedAt: "2026-02-15T16:37:30.849350400Z"
+        "404":
+          description: Claim not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Invalid transition (allowed only from VALIDATED)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /api/v1/claims/{claimId}/pay:
+    post:
+      tags: [Claims]
+      summary: Pay claim (APPROVED -> PAID)
+      operationId: payClaim
+      parameters:
+        - in: path
+          name: claimId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PayClaimRequest"
+            examples:
+              pay:
+                summary: Pay with reference
+                value:
+                  paymentRef: "PAY-37238551-132c-4441-87a9-faa8cdce7d94"
+      responses:
+        "200":
+          description: Claim paid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClaimResponse"
+        "404":
+          description: Claim not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Invalid transition (allowed only from APPROVED)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /api/v1/claims/{claimId}/cancel:
+    post:
+      tags: [Claims]
+      summary: Cancel claim (DRAFT|SUBMITTED|VALIDATED|APPROVED -> CANCELLED)
+      operationId: cancelClaim
+      parameters:
+        - in: path
+          name: claimId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CancelClaimRequest"
+            examples:
+              cancel_example:
+                summary: Cancel with reason
+                value:
+                  reason: "User requested cancellation"
+      responses:
+        "200":
+          description: Claim cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClaimResponse"
+        "404":
+          description: Claim not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "409":
+          description: Invalid transition (not allowed from REJECTED/PAID/CANCELLED)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "500":
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+components:
+  schemas:
+    CreateClaimRequest:
+      type: object
+      required: [policyNumber, claimantId, type, description, amountRequested]
+      properties:
+        policyNumber:
+          type: string
+          maxLength: 64
+        claimantId:
+          type: string
+          maxLength: 64
+        type:
+          $ref: "#/components/schemas/ClaimType"
+        description:
+          type: string
+          maxLength: 500
+        amountRequested:
+          type: number
+          format: double
+          minimum: 0
+
+    RejectClaimRequest:
+      type: object
+      required: [reason]
+      properties:
+        reason:
+          type: string
+          maxLength: 500
+
+    PayClaimRequest:
+      type: object
+      required: [paymentRef]
+      properties:
+        paymentRef:
+          type: string
+          maxLength: 128
+
+    CancelClaimRequest:
+      type: object
+      required: [reason]
+      properties:
+        reason:
+          type: string
+          maxLength: 500
+
+    ClaimResponse:
+      type: object
+      required:
+        - id
+        - policyNumber
+        - claimantId
+        - type
+        - description
+        - amountRequested
+        - status
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        policyNumber:
+          type: string
+          maxLength: 64
+        claimantId:
+          type: string
+          maxLength: 64
+        type:
+          $ref: "#/components/schemas/ClaimType"
+        description:
+          type: string
+          maxLength: 500
+        amountRequested:
+          type: number
+          format: double
+        status:
+          $ref: "#/components/schemas/ClaimStatus"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ClaimStatus:
+      type: string
+      enum: [DRAFT, SUBMITTED, VALIDATED, APPROVED, REJECTED, PAID, CANCELLED]
+
+    ClaimType:
+      type: string
+      enum: [COLLISION, THEFT, GLASS, FIRE, OTHER]
+
+    ApiError:
+      type: object
+      required: [message, type, timestamp]
+      properties:
+        message:
+          type: string
+        type:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
